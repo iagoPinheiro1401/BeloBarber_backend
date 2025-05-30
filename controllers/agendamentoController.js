@@ -1,22 +1,30 @@
 
 import {
-  adicionar,
-  listar,
-  buscarPorId,
-  editar,
-  excluir
+  adicionarAgendamento,
+  listarAgendamentos,
+  buscarAgendamentoPorId,
+  editarAgendamento,
+  excluirAgendamento
 } from '../models/agendamentoModel.js';
 
 // Criar agendamento
 export const adicionar = async (req, res) => {
   try {
-    const resultado = await criarAgendamento(req.body);
-    res.status(201).json({ mensagem: 'Agendamento criado com sucesso', id: resultado.insertId });
+    const { Data, Hora, Status, ID_Profissional } = req.body;
+    const ID_Cliente = req.usuario.ID_Cliente;
+
+    if (!ID_Cliente) {
+      return res.status(403).json({ mensagem: "Apenas clientes podem agendar" });
+    }
+
+    await adicionarAgendamento({ Data, Hora, Status, ID_Cliente, ID_Profissional });
+    res.status(201).json({ mensagem: "Agendamento criado com sucesso" });
   } catch (error) {
-    console.error('Erro ao criar agendamento:', error);
-    res.status(500).json({ erro: 'Erro ao criar agendamento' });
+    console.error("Erro ao criar agendamento:", error);
+    res.status(500).json({ mensagem: "Erro interno ao criar agendamento" });
   }
 };
+
 
 // Listar agendamentos
 export const listar = async (req, res) => {
@@ -46,7 +54,7 @@ export const buscarPorId = async (req, res) => {
 // Atualizar agendamento
 export const editar = async (req, res) => {
   try {
-    const resultado = await atualizarAgendamento(req.params.id, req.body);
+    const resultado = await editarAgendamento(req.params.id, req.body);
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ erro: 'Agendamento não encontrado para atualizar' });
     }
@@ -60,7 +68,7 @@ export const editar = async (req, res) => {
 // Deletar agendamento
 export const excluir = async (req, res) => {
   try {
-    const resultado = await deletarAgendamento(req.params.id);
+    const resultado = await excluirAgendamento(req.params.id);
     if (resultado.affectedRows === 0) {
       return res.status(404).json({ erro: 'Agendamento não encontrado para deletar' });
     }
