@@ -5,6 +5,7 @@ import { verificarToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
+router.get('/agendados', verificarToken, controller.agendamentosPorDataEProfissional);
 router.get('/disponiveis', controller.horariosDisponiveis);
 router.get('/', verificarToken, controller.listar);
 router.get('/:id', verificarToken ,controller.buscarPorId);

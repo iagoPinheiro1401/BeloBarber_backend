@@ -5,7 +5,8 @@ import {
   buscarAgendamentoPorId,
   editarAgendamento,
   excluirAgendamento,
-  buscarHorariosAgendados
+  buscarHorariosAgendados,
+  buscarAgendamentosPorDataEProfissionalComCliente
 } from '../models/agendamentoModel.js';
 
 // Criar agendamento
@@ -125,5 +126,21 @@ export const horariosDisponiveis = async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar horários disponíveis:', error);
     res.status(500).json({ error: 'Erro ao buscar horários disponíveis' });
+  }
+};
+
+export const agendamentosPorDataEProfissional = async (req, res) => {
+  try {
+    const { data, idProfissional } = req.query;
+    if (!data || !idProfissional) {
+      return res.status(400).json({ error: 'Data e idProfissional são obrigatórios.' });
+    }
+
+    const agendamentos = await buscarAgendamentosPorDataEProfissionalComCliente(data, idProfissional);
+
+    res.json(agendamentos);
+  } catch (error) {
+    console.error('Erro ao buscar agendamentos:', error);
+    res.status(500).json({ error: 'Erro ao buscar agendamentos' });
   }
 };

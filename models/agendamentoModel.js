@@ -41,3 +41,15 @@ export const buscarHorariosAgendados = async (data, idProfissional) => {
   );
   return rows;
 };
+
+export const buscarAgendamentosPorDataEProfissionalComCliente = async (data, idProfissional) => {
+  const [rows] = await pool.query(
+    `SELECT a.Hora, c.Nome AS Cliente
+     FROM agendamento a
+     JOIN cliente c ON a.ID_Cliente = c.ID_Cliente
+     WHERE a.Data = ? AND a.ID_Profissional = ?
+     ORDER BY a.Hora`,
+    [data, idProfissional]
+  );
+  return rows;
+};
