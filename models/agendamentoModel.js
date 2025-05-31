@@ -44,9 +44,14 @@ export const buscarHorariosAgendados = async (data, idProfissional) => {
 
 export const buscarAgendamentosPorDataEProfissionalComCliente = async (data, idProfissional) => {
   const [rows] = await pool.query(
-    `SELECT a.Hora, c.Nome AS Cliente
+    `SELECT 
+        a.Hora, 
+        c.Nome AS Cliente, 
+        s.Nome AS Servicos, 
+        s.Preco
      FROM agendamento a
      JOIN cliente c ON a.ID_Cliente = c.ID_Cliente
+     JOIN servicos s ON a.ID_Servico = s.ID_Servico
      WHERE a.Data = ? AND a.ID_Profissional = ?
      ORDER BY a.Hora`,
     [data, idProfissional]
