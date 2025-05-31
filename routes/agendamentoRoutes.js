@@ -5,6 +5,7 @@ import { verificarToken } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
+router.get('/disponiveis', controller.horariosDisponiveis);
 router.get('/', verificarToken, controller.listar);
 router.get('/:id', verificarToken ,controller.buscarPorId);
 router.post('/', verificarToken, controller.adicionar);

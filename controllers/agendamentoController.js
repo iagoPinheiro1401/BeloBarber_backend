@@ -4,7 +4,8 @@ import {
   listarAgendamentos,
   buscarAgendamentoPorId,
   editarAgendamento,
-  excluirAgendamento
+  excluirAgendamento,
+  buscarHorariosAgendados
 } from '../models/agendamentoModel.js';
 
 // Criar agendamento
@@ -76,5 +77,53 @@ export const excluir = async (req, res) => {
   } catch (error) {
     console.error('Erro ao deletar agendamento:', error);
     res.status(500).json({ erro: 'Erro ao deletar agendamento' });
+  }
+};
+
+export const horariosDisponiveis = async (req, res) => {
+  try {
+    const { data, idProfissional } = req.query;
+
+    if (!data || !idProfissional) {
+      return res.status(400).json({ error: 'Data e idProfissional são obrigatórios.' });
+    }
+
+    const gerarHorarios = () => {
+      const horarios = [];
+
+      const addIntervalos = (inicio, fim) => {
+        let [hora, minuto] = inicio.split(':').map(Number);
+        const [horaFim, minutoFim] = fim.split(':').map(Number);
+
+        while (hora < horaFim || (hora === horaFim && minuto < minutoFim)) {
+          const h = String(hora).padStart(2, '0');
+          const m = String(minuto).padStart(2, '0');
+          horarios.push(`${h}:${m}`);
+
+          minuto += 30;
+          if (minuto >= 60) {
+            minuto = 0;
+            hora++;
+          }
+        }
+      };
+
+      addIntervalos('08:00', '12:00');
+      addIntervalos('13:00', '19:00');
+
+      return horarios;
+    };
+
+    const todosHorarios = gerarHorarios();
+
+    const agendados = await buscarHorariosAgendados(data, idProfissional);
+    const horariosIndisponiveis = agendados.map(h => h.Hora.slice(0, 5));
+
+    const horariosDisponiveis = todosHorarios.filter(h => !horariosIndisponiveis.includes(h));
+
+    res.json(horariosDisponiveis);
+  } catch (error) {
+    console.error('Erro ao buscar horários disponíveis:', error);
+    res.status(500).json({ error: 'Erro ao buscar horários disponíveis' });
   }
 };
