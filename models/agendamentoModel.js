@@ -2,10 +2,10 @@
 import pool from '../db.js';
 
 export const adicionarAgendamento = async (agendamento) => {
-  const { Data, Hora, Status, ID_Cliente, ID_Profissional } = agendamento;
+  const { Data, Hora, Status, ID_Cliente, ID_Profissional, ID_Servico } = agendamento;
   const [result] = await pool.query(
-    'INSERT INTO agendamento (Data, Hora, Status, ID_Cliente, ID_Profissional) VALUES (?, ?, ?, ?, ?)',
-    [Data, Hora, Status, ID_Cliente, ID_Profissional]
+    'INSERT INTO agendamento (Data, Hora, Status, ID_Cliente, ID_Profissional, ID_Servico) VALUES (?, ?, ?, ?, ?, ?)',
+    [Data, Hora, Status, ID_Cliente, ID_Profissional, ID_Servico]
   );
   return result;
 };
@@ -21,10 +21,10 @@ export const buscarAgendamentoPorId = async (id) => {
 };
 
 export const editarAgendamento = async (id, agendamento) => {
-  const { Data, Hora, Status, ID_Cliente, ID_Profissional } = agendamento;
+  const { Data, Hora, Status, ID_Cliente, ID_Profissional, ID_Servico } = agendamento;
   const [result] = await pool.query(
-    'UPDATE agendamento SET Data = ?, Hora = ?, Status = ?, ID_Cliente = ?, ID_Profissional = ? WHERE ID_Agendamento = ?',
-    [Data, Hora, Status, ID_Cliente, ID_Profissional, id]
+    'UPDATE agendamento SET Data = ?, Hora = ?, Status = ?, ID_Cliente = ?, ID_Profissional = ?, ID_Servico = ? WHERE ID_Agendamento = ?',
+    [Data, Hora, Status, ID_Cliente, ID_Profissional, ID_Servico, id]
   );
   return result;
 };

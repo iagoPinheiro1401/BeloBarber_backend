@@ -12,14 +12,14 @@ import {
 // Criar agendamento
 export const adicionar = async (req, res) => {
   try {
-    const { Data, Hora, Status, ID_Profissional } = req.body;
+    const { Data, Hora, Status, ID_Profissional, ID_Servico } = req.body;
     const ID_Cliente = req.usuario.ID_Cliente;
 
     if (!ID_Cliente) {
       return res.status(403).json({ mensagem: "Apenas clientes podem agendar" });
     }
 
-    await adicionarAgendamento({ Data, Hora, Status, ID_Cliente, ID_Profissional });
+    await adicionarAgendamento({ Data, Hora, Status, ID_Cliente, ID_Profissional, ID_Servico });
     res.status(201).json({ mensagem: "Agendamento criado com sucesso" });
   } catch (error) {
     console.error("Erro ao criar agendamento:", error);
